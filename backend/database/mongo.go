@@ -3,29 +3,49 @@ package database
 import (
 	"context"
 	"log"
+	"os"
+	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var MongoClient *mongo.Client
 
-func ConnectToMongoDB() (*mongo.Client, error) {
-	// Remplacez cette URI par l'URI de votre MongoDB Atlas
-	uri := "mongodb+srv://nvancuong:PvxBhYFBgD55r0km@cluster0.qz2fljz.mongodb.net/"
+//@author nvancuong2
+//@date 2023-10-01
+//@description This file contains the MongoDB connection logic for the backend of the tax API application. It uses the MongoDB Go driver to establish a connection to the database and handles environment variables using godotenv.
 
-	clientOptions := options.Client().ApplyURI(uri)
-
-	client, err := mongo.Connect(context.Background(), clientOptions)
+// ConnectToMongoDB establishes a connection to MongoDB
+func ConnectToMongoDB() {
+	// Explicitly load the .env file
+	//err := godotenv.Load("e:/source/repose/taxApiGoReact/backend/.env")
+	err := godotenv.Load("backend/.env")
 	if err != nil {
-		return nil, err
+		log.Println("No .env file found, using system environment variables")
 	}
 
-	err = client.Ping(context.Background(), nil)
+	// Get MongoDB URI from environment variables
+	mongoURI := os.Getenv("MONGO_URI")
+	if mongoURI == "" {
+		log.Fatal("MONGO_URI environment variable is not set")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	clientOptions := options.Client().ApplyURI(mongoURI)
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		return nil, err
+		log.Fatalf("Failed to connect to MongoDB: %v", err)
+	}
+
+	// Ping the database to verify the connection
+	if err := client.Ping(ctx, nil); err != nil {
+		log.Fatalf("Failed to ping MongoDB: %v", err)
 	}
 
 	log.Println("Connected to MongoDB!")
-	return client, nil
+	MongoClient = client
 }

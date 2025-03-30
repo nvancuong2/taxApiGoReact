@@ -1,0 +1,6 @@
+{
+    "database": "taxdb",
+    "collection": "taxreturns",
+    "query": {},
+    "pretty": true
+}
