@@ -35,7 +35,7 @@ func main() {
 	// Swagger route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	routes.SetupRoutes()
+	routes.SetupRoutes(router)
 	log.Println("Server running on http://localhost:8080")
 	log.Fatal(router.Run(":8080"))
 }
