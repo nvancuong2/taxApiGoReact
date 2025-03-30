@@ -1,0 +1,12 @@
+# Configuration de Air
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go run cmd/apigo/main.go"
+  bin = "tmp/main"
+  include = ["*.go"]
+  exclude = []
+
+[log]
+  time = true
