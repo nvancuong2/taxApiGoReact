@@ -29,7 +29,7 @@ func main() {
 
 	// Get the MongoDB collection
 	collection := database.MongoClient.Database("taxdb").Collection("taxreturns")
-
+	println("MongoDB collection: ", collection.Name())
 	// Insert data
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

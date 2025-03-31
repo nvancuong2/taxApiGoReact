@@ -3,31 +3,31 @@ package database
 import (
 	"context"
 	"log"
-	"os"
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/nvancuong2/taxApiGoReact/backend/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var MongoClient *mongo.Client
 
-//@author nvancuong2
-//@date 2023-10-01
-//@description This file contains the MongoDB connection logic for the backend of the tax API application. It uses the MongoDB Go driver to establish a connection to the database and handles environment variables using godotenv.
-
 // ConnectToMongoDB establishes a connection to MongoDB
 func ConnectToMongoDB() {
 	// Explicitly load the .env file
-	//err := godotenv.Load("e:/source/repose/taxApiGoReact/backend/.env")
-	err := godotenv.Load("backend/.env")
+	err := godotenv.Load(".env")
+
+	println("Loading .env file...", err)
 	if err != nil {
 		log.Println("No .env file found, using system environment variables")
 	}
 
 	// Get MongoDB URI from environment variables
-	mongoURI := os.Getenv("MONGO_URI")
+	mongoURI := config.GetMongoURI()
+
+	println("Mongo URI: ", mongoURI)
+
 	if mongoURI == "" {
 		log.Fatal("MONGO_URI environment variable is not set")
 	}

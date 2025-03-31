@@ -1,37 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const ApiDisplay = () => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+const API_URL = 'http://localhost:8080/api'; // Adjust the URL as needed
 
-    useEffect(() => {
-        // Replace 'http://localhost:5000/api' with your backend API URL
-        fetch('http://localhost:5000/api')
-            .then((response) => response.json())
-            .then((data) => {
-                setData(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-                setLoading(false);
-            });
-    }, []);
-
-    if (loading) {
-        return <div>Loading...</div>;
+export const submitTaxForm = async (companyData) => {
+    try {
+        const response = await axios.post(`${API_URL}/calculate-tax`, companyData);
+        return response.data;
+    } catch (error) {
+        console.error('Error submitting tax form:', error);
+        throw error;
     }
-
-    return (
-        <div>
-            <h1>API Data</h1>
-            <ul>
-                {data.map((item, index) => (
-                    <li key={index}>{JSON.stringify(item)}</li>
-                ))}
-            </ul>
-        </div>
-    );
 };
-
-export default ApiDisplay;
